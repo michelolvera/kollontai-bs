@@ -46,15 +46,13 @@ import RegistryCard from './RegistryCard.vue'
       </p>
     </div>
 
-    <!-- La gansa se asoma por el costado de la tarjeta, a la altura del título -->
+    <!-- La gansa se asoma por encima de la tarjeta -->
     <div v-reveal class="gifts__free">
-      <div class="gifts__head">
-        <div v-reveal:left="200" class="gifts__goose">
-          <img :src="goose" width="612" height="612" alt="Gansa con lentes y moño rosa" />
-          <img class="gifts__ribbon" :src="glasses" alt="" />
-        </div>
-        <h3 class="gifts__subtitle">Regalos que no cuestan pero valen muchísimo</h3>
+      <div v-reveal:left="200" class="gifts__goose">
+        <img :src="goose" width="612" height="612" alt="Gansa con lentes y moño rosa" />
+        <img class="gifts__ribbon" :src="glasses" alt="" />
       </div>
+      <h3 class="gifts__subtitle">Regalos que no cuestan pero valen muchísimo</h3>
       <p class="gifts__resources">
         Lupita, en su infinita ñoñez, agradecerá de corazón si compartes contactos de asesoras de
         lactancia, clases de estimulación prenatal, cursos de primeros auxilios para bebés o
@@ -183,7 +181,7 @@ import RegistryCard from './RegistryCard.vue'
 .gifts__free {
   position: relative;
   width: 100%;
-  margin-top: calc(var(--s) * 48);
+  margin-top: calc(var(--s) * 96);
   padding: calc(var(--s) * 28) calc(var(--s) * 22) calc(var(--s) * 28);
   border: 1px solid var(--glass-border);
   border-radius: calc(var(--s) * 36);
@@ -193,20 +191,13 @@ import RegistryCard from './RegistryCard.vue'
   box-shadow: var(--glass-shadow);
 }
 
-/* Gansa y título centrados uno con el otro */
-.gifts__head {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--s) * 6);
-}
-
-/* Los márgenes negativos (iguales arriba y abajo, para no mover su centro) dejan
-   que la ilustración sea más alta que el renglón y se salga por la izquierda. */
 .gifts__goose {
-  position: relative;
-  flex: none;
-  width: calc(var(--s) * 150);
-  margin: calc(var(--s) * -26) 0 calc(var(--s) * -26) calc(var(--s) * -36);
+  position: absolute;
+  /* Asomada sobre la tarjeta, lo bastante abajo para quedar junto al título
+     sin que las patas pisen el párrafo */
+  top: calc(var(--s) * -68);
+  left: calc(var(--s) * -22);
+  width: calc(var(--s) * 176);
   pointer-events: none;
 }
 
@@ -235,6 +226,7 @@ import RegistryCard from './RegistryCard.vue'
 }
 
 .gifts__subtitle {
+  margin-left: calc(var(--s) * 128);
   color: var(--pink);
   font-weight: 700;
   font-size: calc(var(--s) * 16.5);
@@ -243,7 +235,7 @@ import RegistryCard from './RegistryCard.vue'
 }
 
 .gifts__resources {
-  margin-top: calc(var(--s) * 26);
+  margin-top: calc(var(--s) * 22);
   font-size: var(--fs-body);
   line-height: 1.65;
   text-wrap: pretty;

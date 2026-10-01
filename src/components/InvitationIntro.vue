@@ -143,9 +143,11 @@ img {
   }
 }
 
+/* El nudo y las lazadas quedan montados sobre el borde del círculo;
+   las puntas cuelgan hacia adentro */
 .arrival__bow {
   position: absolute;
-  top: calc(var(--s) * -64);
+  top: calc(var(--s) * -48);
   left: 50%;
   width: calc(var(--s) * 132);
   margin-left: calc(var(--s) * -66);
