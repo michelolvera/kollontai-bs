@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Kollontai//Baby Shower//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:baby-shower-ada-kollontai-20261025@kollontai-bs
+DTSTAMP:20260930T000000Z
+DTSTART:20261025T200000Z
+DTEND:20261026T013000Z
+SUMMARY:Baby Shower de Ada Kollontai
+DESCRIPTION:Acompáñanos a celebrar la llegada de nuestra hija Ada Kollonta
+ i. Recepción a las 2:00 pm.\nUbicación: https://maps.app.goo.gl/beY6BebKHF
+ QrDtkPA
+LOCATION:Jardín de Mis Amores\, Tancítaro #66\, Lomas de Guayangareo\, 582
+ 40 Morelia\, Mich.\, México
+URL:https://maps.app.goo.gl/beY6BebKHFQrDtkPA
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Mañana es el Baby Shower de Ada Kollontai
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+END:VCALENDAR

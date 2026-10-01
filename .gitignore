@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Video original sin comprimir (104 MB, supera el límite de GitHub). La web usa reel-web.mp4
+src/assets/reel.mp4
