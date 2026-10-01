@@ -1,7 +1,10 @@
 import type { Directive } from 'vue'
 
-// v-reveal: el elemento pasa de transparente a sólido al entrar en pantalla.
-// El valor opcional es el retraso en milisegundos (v-reveal="150").
+// v-reveal: el elemento aparece al entrar en pantalla.
+// El argumento elige el tipo de entrada (v-reveal:scale) y el valor opcional
+// es el retraso en milisegundos (v-reveal="150"). Los estilos están en style.css.
+export type RevealKind = 'up' | 'scale' | 'left' | 'right' | 'blur' | 'write' | 'words'
+
 let observer: IntersectionObserver | undefined
 
 function getObserver(): IntersectionObserver | undefined {
@@ -14,14 +17,14 @@ function getObserver(): IntersectionObserver | undefined {
         observer?.unobserve(entry.target)
       }
     },
-    { threshold: 0.15, rootMargin: '0px 0px -6% 0px' },
+    { threshold: 0.12, rootMargin: '0px 0px -7% 0px' },
   )
   return observer
 }
 
-export const vReveal: Directive<HTMLElement, number | undefined> = {
-  mounted(el, { value }) {
-    el.classList.add('reveal')
+export const vReveal: Directive<HTMLElement, number | undefined, string, RevealKind> = {
+  mounted(el, { value, arg }) {
+    el.classList.add('reveal', `reveal--${arg ?? 'up'}`)
     if (value) el.style.setProperty('--reveal-delay', `${value}ms`)
 
     const io = getObserver()

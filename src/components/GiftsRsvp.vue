@@ -1,248 +1,370 @@
 <script setup lang="ts">
+import bow from '../assets/img/bow.webp'
 import giftbox from '../assets/img/giftbox.webp'
 import glasses from '../assets/img/glasses.svg'
 import goose from '../assets/img/goose.webp'
 import calendarIcon from '../assets/img/icon-calendar.webp'
-import presentIcon from '../assets/img/icon-present.webp'
 import sadIcon from '../assets/img/icon-sad.svg'
 import whatsappIcon from '../assets/img/icon-whatsapp.svg'
 import rattle from '../assets/img/rattle.webp'
-import { box, maskIcon } from '../design'
+import { maskIcon } from '../design'
+import { vParallax } from '../directives/parallax'
 import { vReveal } from '../directives/reveal'
 import { REGISTRY, RSVP_NO_URL, RSVP_YES_URL } from '../event'
 import PillButton from './PillButton.vue'
+import RegistryCard from './RegistryCard.vue'
 </script>
 
 <template>
-  <section id="regalos" class="sheet gifts">
-    <div class="gifts__column" />
-    <img v-reveal class="fill" :style="box(15, 508, 223, 248)" :src="giftbox" alt="" />
-    <img v-reveal="300" class="fill gifts__rattle" :style="box(448, 997, 164, 280)" :src="rattle" alt="" />
+  <section id="regalos" class="gifts">
+    <div v-reveal:scale class="gifts__box">
+      <img class="floaty" :src="giftbox" width="260" height="289" alt="" />
+    </div>
+    <h2 v-reveal:blur="100" class="script gifts__title">Regalos</h2>
 
-    <h2 v-reveal class="script gifts__title">Regalos</h2>
-    <p v-reveal="100" class="gifts__text gifts__intro">
+    <p v-reveal="150" class="gifts__intro glass">
       Lo más importante para nosotros es tu presencia y tu buena energía en el Baby Shower. Pero si
       deseas dar un regalo a nuestra hija, lo recibiremos con mucho cariño y te compartimos nuestra
       mesa de regalos
     </p>
 
-    <div v-reveal="150" class="gifts__registry" aria-label="Mesa de regalos">
-      <PillButton :href="REGISTRY.amazon" external :icon="presentIcon">Amazon</PillButton>
-      <PillButton :href="REGISTRY.liverpool" external :icon="presentIcon">Liverpool</PillButton>
+    <div class="gifts__registry">
+      <div v-reveal:scale>
+        <RegistryCard :href="REGISTRY.amazon" store="Amazon" tone="olive" />
+      </div>
+      <div v-reveal:scale="150">
+        <RegistryCard :href="REGISTRY.liverpool" store="Liverpool" tone="pink" />
+      </div>
     </div>
 
-    <p v-reveal class="gifts__text gifts__spoiler">
-      <strong>SPOILER:</strong> Recuerda que somos primerizos y todavía no tenemos muy claro qué
-      necesitamos jeje
-    </p>
+    <div v-reveal class="gifts__spoiler">
+      <img v-parallax="-12" class="gifts__rattle" :src="rattle" width="200" height="341" alt="" />
+      <p>
+        <strong>Spoiler:</strong> Recuerda que somos primerizos y todavía no tenemos muy claro qué
+        necesitamos jeje
+      </p>
+    </div>
 
-    <div class="gifts__free">
-      <div v-reveal class="gifts__goose">
-        <img class="fill" :src="goose" alt="Gansa con lentes y moño rosa" />
-        <img class="gifts__glasses" :style="box(215, 208, 129, 70)" :src="glasses" alt="" />
+    <!-- La gansa se asoma por encima de la tarjeta -->
+    <div v-reveal class="gifts__free">
+      <div v-reveal:left="200" class="gifts__goose">
+        <img :src="goose" width="612" height="612" alt="Gansa con lentes y moño rosa" />
+        <img class="gifts__ribbon" :src="glasses" alt="" />
       </div>
-      <h3 v-reveal class="gifts__subtitle">Regalos que no cuestan pero valen muchísimo</h3>
-      <p v-reveal="100" class="gifts__text gifts__resources">
+      <h3 class="gifts__subtitle">Regalos que no cuestan pero valen muchísimo</h3>
+      <p class="gifts__resources">
         Lupita, en su infinita ñoñez, agradecerá de corazón si compartes contactos de asesoras de
         lactancia, clases de estimulación prenatal, cursos de primeros auxilios para bebés o
         cualquier recurso útil que nos ayude en esta nueva aventura
       </p>
     </div>
+  </section>
 
-    <div id="confirmacion" class="rsvp">
-      <span
-        v-reveal
-        class="rsvp__icon"
-        :style="maskIcon(calendarIcon)"
-        aria-hidden="true"
-      />
-      <h2 v-reveal="50" class="script rsvp__title">Confirmación</h2>
-      <p v-reveal="100" class="rsvp__text">
-        Agradecemos que confirmes tu asistencia antes del 20 de octubre
+  <section id="confirmacion" class="rsvp">
+    <div class="rsvp__glow" aria-hidden="true" />
+    <div class="rsvp__inner">
+      <span v-reveal:scale class="rsvp__seal" aria-hidden="true">
+        <span class="icon-mask" :style="maskIcon(calendarIcon)" />
+      </span>
+      <h2 v-reveal:blur="100" class="script rsvp__title">Confirmación</h2>
+      <p v-reveal="200" class="rsvp__text">
+        Agradecemos que confirmes tu asistencia antes del <strong>20 de octubre</strong>
       </p>
-      <div v-reveal="150" class="rsvp__actions">
-        <PillButton class="rsvp__button" :href="RSVP_YES_URL" external :icon="whatsappIcon">
+      <div v-reveal="300" class="rsvp__actions">
+        <PillButton variant="light" pulse :href="RSVP_YES_URL" external :icon="whatsappIcon">
           Confirmar asistencia
         </PillButton>
-        <PillButton class="rsvp__button" :href="RSVP_NO_URL" external :icon="whatsappIcon">
+        <PillButton variant="ghost" :href="RSVP_NO_URL" external>
           No puedo asistir
-          <span class="rsvp__sad" :style="maskIcon(sadIcon)" aria-hidden="true" />
+          <span class="rsvp__sad icon-mask" :style="maskIcon(sadIcon)" aria-hidden="true" />
         </PillButton>
+      </div>
+
+      <div v-reveal:scale="150" class="rsvp__farewell">
+        <img :src="bow" width="474" height="500" alt="" />
+        <p class="script">¡Te esperamos!</p>
       </div>
     </div>
   </section>
 </template>
 
 <style scoped>
+/* ---------- Regalos ---------- */
+
 .gifts {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: calc(var(--u) * 268);
+  width: var(--col);
+  margin: 0 auto;
+  padding: calc(var(--s) * 40) var(--gutter) calc(var(--s) * 70);
 }
 
-/* Columna crema con el estampado de patitos */
-.gifts__column {
-  position: absolute;
-  inset: 0 auto 0 calc(var(--u) * 168);
-  width: calc(var(--u) * 913);
-  background:
-    linear-gradient(var(--cream), transparent calc(var(--u) * 200)),
-    var(--cream) url('../assets/img/duck-pattern.webp') 0 0 / calc(var(--u) * 427);
+.gifts__box {
+  width: calc(var(--s) * 104);
 }
 
-.gifts > :not(.gifts__column, img) {
-  position: relative;
-}
-
-.fill {
+.gifts__box img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.gifts__rattle {
-  transform: rotate(14deg);
+  height: auto;
+  filter: drop-shadow(0 calc(var(--s) * 14) calc(var(--s) * 14) rgb(164 80 106 / 0.28));
 }
 
 .gifts__title {
-  left: calc(var(--u) * -17);
+  margin-top: calc(var(--s) * 4);
   color: var(--olive-dark);
-  font-size: calc(var(--u) * 114);
-  line-height: 0.95;
-  letter-spacing: 0.04em;
+  font-size: calc(var(--s) * 68);
+  line-height: 1.05;
 }
 
-.gifts__text {
-  color: var(--olive-text);
-  font-size: max(calc(var(--u) * 28), 12px);
-  line-height: 1.4;
+.gifts__intro {
+  margin-top: calc(var(--s) * 16);
+  padding: calc(var(--s) * 24) calc(var(--s) * 22);
+  border-radius: calc(var(--s) * 32);
+  font-size: var(--fs-body);
+  line-height: 1.65;
   text-align: center;
   text-wrap: pretty;
 }
 
-.gifts__intro {
-  left: calc(var(--u) * 17);
-  width: calc(var(--u) * 740);
-  margin-top: calc(var(--u) * 6);
-}
-
 .gifts__registry {
-  left: calc(var(--u) * 28);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: calc(var(--u) * 24);
-  width: calc(var(--u) * 760);
-  margin-top: calc(var(--u) * 36);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--s) * 14);
+  width: 100%;
+  margin-top: calc(var(--s) * 20);
 }
 
+/* Las tarjetas no quedan a la misma altura */
+.gifts__registry > :last-child {
+  margin-top: calc(var(--s) * 20);
+}
+
+.gifts__registry > * > * {
+  height: 100%;
+}
+
+/* Nota inclinada, con la sonaja colgando de la esquina */
 .gifts__spoiler {
-  left: calc(var(--u) * 30);
-  width: calc(var(--u) * 645);
-  margin-top: calc(var(--u) * 36);
-  font-size: max(calc(var(--u) * 24), 11px);
+  position: relative;
+  align-self: flex-start;
+  width: 86%;
+  margin-top: calc(var(--s) * 36);
+  padding: calc(var(--s) * 18) calc(var(--s) * 58) calc(var(--s) * 18) calc(var(--s) * 20);
+  border: 1.5px dashed rgb(223 114 146 / 0.7);
+  border-radius: calc(var(--s) * 22);
+  background: rgb(255 250 250 / 0.82);
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  rotate: -2deg;
 }
 
 .gifts__spoiler strong {
   color: var(--pink);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15em;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-/* Bloque con la gansa a la izquierda: sus patas pisan el panel verde */
+.gifts__rattle {
+  position: absolute;
+  top: calc(var(--s) * -20);
+  right: calc(var(--s) * -44);
+  width: calc(var(--s) * 84);
+  height: auto;
+  rotate: 18deg;
+  filter: drop-shadow(0 calc(var(--s) * 10) calc(var(--s) * 10) rgb(164 80 106 / 0.25));
+}
+
 .gifts__free {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   width: 100%;
-  margin-top: calc(var(--u) * 50);
-  padding: 0 calc(var(--u) * 186) calc(var(--u) * 62) calc(var(--u) * 328);
+  margin-top: calc(var(--s) * 96);
+  padding: calc(var(--s) * 28) calc(var(--s) * 22) calc(var(--s) * 28);
+  border: 1px solid var(--glass-border);
+  border-radius: calc(var(--s) * 36);
+  background:
+    linear-gradient(rgb(252 251 247 / 0.5), rgb(252 251 247 / 0.5)),
+    var(--cream) url('../assets/img/duck-pattern.webp') 0 0 / calc(var(--s) * 150);
+  box-shadow: var(--glass-shadow);
 }
 
 .gifts__goose {
   position: absolute;
-  z-index: 1;
-  bottom: calc(var(--u) * -93);
-  left: calc(var(--u) * -98);
-  width: calc(var(--u) * 528);
-  height: calc(var(--u) * 528);
+  top: calc(var(--s) * -92);
+  left: calc(var(--s) * -22);
+  width: calc(var(--s) * 176);
   pointer-events: none;
 }
 
-.gifts__glasses {
-  transform: rotate(4.7deg);
+.gifts__goose img:first-child {
+  width: 100%;
+  height: auto;
+}
+
+/* glasses.svg es el moño del cuello: de vez en cuando se le mueve */
+.gifts__ribbon {
+  position: absolute;
+  top: 40.7%;
+  left: 39.4%;
+  width: 24.4%;
+  rotate: 4.7deg;
+  animation: flutter 6s ease-in-out infinite;
+}
+
+@keyframes flutter {
+  84% {
+    rotate: 11deg;
+  }
+  92% {
+    rotate: 0deg;
+  }
 }
 
 .gifts__subtitle {
-  width: calc(var(--u) * 629);
+  margin-left: calc(var(--s) * 128);
   color: var(--pink);
   font-weight: 700;
-  font-size: max(calc(var(--u) * 37.3), 14px);
-  line-height: 1.3;
-  text-align: center;
+  font-size: calc(var(--s) * 16.5);
+  line-height: 1.35;
   text-wrap: balance;
 }
 
 .gifts__resources {
-  margin-top: calc(var(--u) * 27);
+  margin-top: calc(var(--s) * 22);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  text-wrap: pretty;
 }
 
+/* ---------- Confirmación ---------- */
+
 .rsvp {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: calc(var(--u) * 913);
-  padding: calc(var(--u) * 71) calc(var(--u) * 30) calc(var(--u) * 80);
-  background: var(--sage);
+  overflow: hidden;
+  border-radius: 50% 50% 0 0 / calc(var(--s) * 64) calc(var(--s) * 64) 0 0;
+  background: linear-gradient(165deg, #a7b05a, var(--olive) 38%, var(--olive-dark));
   color: #fff;
   text-align: center;
 }
 
-.rsvp__icon {
-  width: calc(var(--u) * 54);
-  height: calc(var(--u) * 54);
-  background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat;
-  mask: var(--icon) center / contain no-repeat;
+/* Patitos del diseño y luces verdes que se mueven despacio */
+.rsvp__glow {
+  position: absolute;
+  inset: 0;
+  background: url('../assets/img/duck-pattern.webp') 0 0 / calc(var(--s) * 170);
+  opacity: 0.4;
+}
+
+.rsvp::before,
+.rsvp::after {
+  content: '';
+  position: absolute;
+  width: 110vmax;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(189 208 141 / 0.75), transparent);
+  animation: glow 16s ease-in-out infinite alternate;
+}
+
+.rsvp::before {
+  top: -60vmax;
+  left: -60vmax;
+}
+
+.rsvp::after {
+  right: -70vmax;
+  bottom: -70vmax;
+  background: radial-gradient(closest-side, rgb(229 104 129 / 0.3), transparent);
+  animation-duration: 21s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes glow {
+  to {
+    transform: translate3d(18vmax, 14vmax, 0) scale(1.15);
+  }
+}
+
+.rsvp__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--col);
+  margin: 0 auto;
+  padding: calc(var(--s) * 74) var(--gutter)
+    calc(env(safe-area-inset-bottom, 0px) + var(--s) * 50);
+}
+
+.rsvp__seal {
+  display: grid;
+  place-items: center;
+  width: calc(var(--s) * 68);
+  height: calc(var(--s) * 68);
+  border: 1px solid rgb(255 255 255 / 0.55);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.16);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.rsvp__seal .icon-mask {
+  width: 42%;
+  height: 42%;
 }
 
 .rsvp__title {
-  margin-top: calc(var(--u) * 16);
-  font-size: calc(var(--u) * 94);
-  line-height: 1;
+  margin-top: calc(var(--s) * 14);
+  font-size: calc(var(--s) * 64);
+  line-height: 1.1;
+  text-shadow: 0 2px calc(var(--s) * 18) rgb(60 75 20 / 0.45);
 }
 
 .rsvp__text {
-  width: calc(var(--u) * 834);
-  margin-top: calc(var(--u) * 12);
+  max-width: calc(var(--s) * 300);
+  margin-top: calc(var(--s) * 10);
   font-style: italic;
-  font-size: max(calc(var(--u) * 40.8), 14px);
-  line-height: 1.4;
+  font-size: calc(var(--s) * 16);
+  line-height: 1.55;
   text-wrap: balance;
+}
+
+.rsvp__text strong {
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .rsvp__actions {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: calc(var(--u) * 14);
-  min-width: calc(var(--u) * 548);
-  margin-top: calc(var(--u) * 34);
-}
-
-.rsvp__button {
-  justify-content: space-between;
-  text-transform: uppercase;
+  gap: calc(var(--s) * 16);
+  width: min(100%, calc(var(--s) * 300));
+  margin-top: calc(var(--s) * 32);
 }
 
 .rsvp__sad {
-  display: inline-block;
-  width: 0.85em;
-  height: 0.75em;
-  margin-left: 0.3em;
+  width: 1em;
+  height: 0.9em;
+  margin-left: 0.5em;
   rotate: -19deg;
-  background: currentColor;
-  -webkit-mask: var(--icon) center / contain no-repeat;
-  mask: var(--icon) center / contain no-repeat;
+}
+
+.rsvp__farewell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: calc(var(--s) * 60);
+  font-size: calc(var(--s) * 42);
+  line-height: 1.1;
+}
+
+.rsvp__farewell img {
+  width: calc(var(--s) * 76);
+  height: auto;
+  filter: drop-shadow(0 calc(var(--s) * 8) calc(var(--s) * 10) rgb(60 75 20 / 0.4));
 }
 </style>

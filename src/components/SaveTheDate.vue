@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import bouquet from '../assets/img/bouquet.webp'
-import bow from '../assets/img/bow.webp'
 import calendarIcon from '../assets/img/icon-calendar.webp'
-import pinIcon from '../assets/img/icon-pin.webp'
-import stork from '../assets/img/stork.webp'
 import { useCountdown } from '../composables/useCountdown'
-import { box, u } from '../design'
+import { vParallax } from '../directives/parallax'
 import { vReveal } from '../directives/reveal'
-import { EVENT, GOOGLE_CALENDAR_URL, ICS_URL, MAP_EMBED_URL, MAP_URL } from '../event'
+import { EVENT, GOOGLE_CALENDAR_URL, ICS_URL } from '../event'
 import EventCountdown from './EventCountdown.vue'
 import PillButton from './PillButton.vue'
 
@@ -25,168 +22,137 @@ onMounted(() => {
     calendarIsExternal.value = true
   }
 })
-
-// Las pastillas se anclan por su centro: en pantallas chicas crecen para poder
-// tocarlas con el dedo, sin moverse del lugar que tienen en el diseño.
-const centered = (centerY: number, centerX: number) => ({
-  position: 'absolute' as const,
-  top: u(centerY),
-  left: u(centerX),
-  transform: 'translate(-50%, -50%)',
-})
 </script>
 
 <template>
-  <section id="fecha" class="sheet date">
-    <div class="date__arch" />
-    <img v-reveal class="fill" :style="box(79, 416, 408, 430)" :src="bow" alt="" />
-    <img v-reveal="200" class="fill" :style="box(481, 20, 266, 406)" :src="bouquet" alt="" />
+  <section id="fecha" class="date">
+    <div v-reveal class="date__card glass">
+      <div v-reveal:left="250" class="date__bouquet">
+        <img v-parallax="-18" :src="bouquet" width="310" height="473" alt="" />
+      </div>
 
-    <h2 v-reveal class="line heading" :style="box(586, 321, 651, 70)">Agenda la fecha</h2>
+      <h2 class="eyebrow">Agenda la fecha</h2>
 
-    <div v-reveal="100" :style="box(700, 223, 835, 120)">
-      <p class="line script date__day" :style="box(-22, 0, 471, 92)">Domingo</p>
-      <p class="line date__month" :style="box(68, 122, 280, 47)">25 octubre</p>
-      <span class="date__rule" :style="box(0, 439, 4, 113)" />
-      <p class="line script date__time" :style="box(22, 471, 286, 85)">02:00 pm</p>
+      <div class="date__lockup">
+        <p class="script date__day">Domingo</p>
+        <p class="date__number">
+          <span>25</span>
+          <small>octubre</small>
+        </p>
+        <p class="script date__time">02:00 pm</p>
+      </div>
+
+      <div v-reveal="250" class="date__action">
+        <PillButton :href="calendarUrl" :external="calendarIsExternal" :icon="calendarIcon">
+          Agregar al calendario
+        </PillButton>
+      </div>
     </div>
 
-    <PillButton
-      v-reveal="150"
-      :style="centered(905, 627)"
-      :href="calendarUrl"
-      :external="calendarIsExternal"
-      :icon="calendarIcon"
-    >
-      Agregar al calendario
-    </PillButton>
-
-    <h2 v-reveal class="line heading" :style="box(987, 346, 600, 70)">
+    <h2 v-reveal:blur class="script date__waiting">
       {{ finished ? '¡Llegó el día!' : 'Faltan' }}
     </h2>
-    <div v-reveal="100" :style="box(1076, 246, 800)">
-      <EventCountdown :target="EVENT.start" />
-    </div>
-
-    <h2 v-reveal class="line heading heading--pink" :style="box(1311, 218, 562, 70)">
-      Te esperamos en...
-    </h2>
-    <div v-reveal="100" :style="box(1425, 69, 800, 190)">
-      <p class="line script date__venue" :style="box(0, 0, 800, 90)">Jardín de mis amores</p>
-      <p class="date__address" :style="box(74, 80, 725)">
-        Tancítaro #66<br />Lomas de Guayangareo, 58240
-      </p>
-    </div>
-    <PillButton v-reveal="150" :style="centered(1686, 532)" :href="MAP_URL" external :icon="pinIcon">
-      Ver ubicación
-    </PillButton>
-
-    <img
-      v-reveal="200"
-      class="fill date__stork"
-      :style="box(1241, 830, 410, 561)"
-      :src="stork"
-      alt="Cigüeña con un bebé"
-    />
-
-    <div v-reveal class="date__map">
-      <iframe
-        :src="MAP_EMBED_URL"
-        title="Mapa de Jardín de Mis Amores"
-        width="600"
-        height="450"
-        style="border: 0"
-        allowfullscreen
-        loading="lazy"
-        referrerpolicy="strict-origin-when-cross-origin"
-      />
-    </div>
+    <EventCountdown :target="EVENT.start" />
   </section>
 </template>
 
 <style scoped>
-/* Reproduce la página 7 del diseño y, debajo, el mapa: la cigüeña queda parada sobre él */
 .date {
-  padding: calc(var(--u) * 1796) 0 calc(var(--u) * 110);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--col);
+  margin: 0 auto;
+  padding: calc(var(--s) * 96) var(--gutter) calc(var(--s) * 50);
 }
 
-.date__arch {
-  position: absolute;
-  inset: calc(var(--u) * 234) auto 0 calc(var(--u) * 168);
-  width: calc(var(--u) * 913);
-  border-radius: calc(var(--u) * 457) calc(var(--u) * 457) 0 0;
-  background: var(--cream);
-}
-
-.fill {
+.date__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  padding: calc(var(--s) * 34) calc(var(--s) * 14) calc(var(--s) * 30);
+  border-radius: calc(var(--s) * 40);
 }
 
-.heading {
-  color: var(--olive-dark);
-  font-weight: 700;
-  font-size: calc(var(--u) * 58.6);
-  text-transform: uppercase;
+/* El ramo se asoma por la esquina de la tarjeta */
+.date__bouquet {
+  position: absolute;
+  top: calc(var(--s) * -112);
+  left: calc(var(--s) * -22);
+  width: calc(var(--s) * 96);
+  rotate: -14deg;
+  pointer-events: none;
 }
 
-.heading--pink {
-  color: var(--pink-soft);
-  text-transform: none;
+.date__bouquet img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 calc(var(--s) * 10) calc(var(--s) * 10) rgb(164 80 106 / 0.25));
+}
+
+.date__lockup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  margin-top: calc(var(--s) * 22);
+  text-align: center;
+}
+
+.date__day,
+.date__time {
+  font-size: calc(var(--s) * 31);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .date__day {
   color: var(--pink-soft);
-  font-size: calc(var(--u) * 108);
-}
-
-.date__month {
-  color: var(--olive-text);
-  font-size: calc(var(--u) * 38);
-  text-transform: uppercase;
-}
-
-.date__rule {
-  background: var(--pink-soft);
 }
 
 .date__time {
   color: var(--pink);
-  font-size: calc(var(--u) * 92);
 }
 
-.date__venue {
+.date__number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 calc(var(--s) * 8);
+  padding: 0 calc(var(--s) * 12);
+  border-inline: 1px solid rgb(223 114 146 / 0.55);
   color: var(--olive-dark);
-  font-size: calc(var(--u) * 96);
+  font-family: var(--font-display);
+  line-height: 1;
 }
 
-.date__address {
-  color: var(--olive-text);
-  font-size: max(calc(var(--u) * 33), 11px);
-  line-height: 1.4;
+.date__number span {
+  font-weight: 600;
+  font-size: calc(var(--s) * 68);
+  font-variant-numeric: lining-nums;
+  line-height: 0.82;
+}
+
+.date__number small {
+  margin-top: calc(var(--s) * 8);
+  font-weight: 700;
+  font-size: max(calc(var(--s) * 12), 11px);
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  text-transform: uppercase;
+}
+
+.date__action {
+  margin-top: calc(var(--s) * 28);
+}
+
+.date__waiting {
+  margin: calc(var(--s) * 64) 0 calc(var(--s) * 34);
+  color: var(--pink);
+  font-size: calc(var(--s) * 60);
+  line-height: 1;
   text-align: center;
-  white-space: nowrap;
-}
-
-.date__stork {
-  z-index: 1;
-  pointer-events: none;
-}
-
-.date__map {
-  position: relative;
-  width: calc(var(--u) * 850);
-  height: max(calc(var(--u) * 600), 250px);
-  margin: 0 auto;
-  overflow: hidden;
-  border: max(calc(var(--u) * 3), 1.5px) solid var(--pink-deep);
-  border-radius: calc(var(--u) * 36);
-  background: #eee9e2;
-}
-
-.date__map iframe {
-  width: 100%;
-  height: 100%;
 }
 </style>
