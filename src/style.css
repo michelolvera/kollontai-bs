@@ -93,6 +93,13 @@ button {
   color: inherit;
 }
 
+/* Netlify inyecta al servir la página un script que crea este iframe fijo en la esquina
+   inferior derecha ("Powered by Netlify"), justo donde vive la barra flotante. */
+#nl-badge-frame,
+#nl-hud-frame {
+  display: none !important;
+}
+
 /* Todo el contenido pasa por encima del video fijo y de la atmósfera */
 main > section {
   position: relative;

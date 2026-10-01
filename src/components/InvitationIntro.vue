@@ -14,7 +14,7 @@ import RevealText from './RevealText.vue'
 <template>
   <!-- La llegada: tendedero -->
   <section id="invitacion" class="arrival">
-    <!-- El texto va al centro de la mancha: el moño cuelga de su borde de arriba
+    <!-- El texto va justo al centro del círculo: el moño cuelga de su borde de arriba
          y el tendedero cruza por el de abajo -->
     <div class="arrival__panel">
       <div v-reveal:scale class="arrival__shape">
@@ -118,10 +118,10 @@ img {
 
 .arrival__panel {
   position: relative;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   width: calc(100% - var(--s) * 28);
-  padding: calc(var(--s) * 104) 0 calc(var(--s) * 132);
+  aspect-ratio: 1;
 }
 
 .arrival__shape {
@@ -129,21 +129,17 @@ img {
   inset: 0;
 }
 
-/* Mancha de vidrio que se mece despacio, como acuarela aún húmeda.
-   Solo gira y respira (transform): cambiar su forma obligaría a repintarla. */
+/* Círculo de vidrio que respira despacio */
 .arrival__blob {
   width: 100%;
   height: 100%;
-  border-radius: 48% 52% 51% 49% / 44% 47% 53% 56%;
-  animation: wobble 16s ease-in-out infinite alternate;
+  border-radius: 50%;
+  animation: breathe 9s ease-in-out infinite alternate;
 }
 
-@keyframes wobble {
-  from {
-    transform: rotate(-3deg) scale(1);
-  }
+@keyframes breathe {
   to {
-    transform: rotate(3deg) scale(1.03);
+    transform: scale(1.03);
   }
 }
 
@@ -160,8 +156,8 @@ img {
   position: relative;
   color: var(--olive-dark);
   font-family: var(--font-formal-script);
-  font-size: calc(var(--s) * 38.5);
-  line-height: 1.14;
+  font-size: calc(var(--s) * 35);
+  line-height: 1.12;
   text-align: center;
 }
 
