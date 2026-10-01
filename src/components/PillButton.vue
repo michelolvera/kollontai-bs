@@ -99,10 +99,8 @@ function removeRipple(id: number) {
 
 .pill--ghost {
   border-color: rgb(255 255 255 / 0.6);
-  background: rgb(255 255 255 / 0.14);
+  background: rgb(255 255 255 / 0.16);
   color: #fff;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
 }
 
 @media (hover: hover) {

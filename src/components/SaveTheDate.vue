@@ -89,7 +89,6 @@ onMounted(() => {
 .date__bouquet img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 calc(var(--s) * 10) calc(var(--s) * 10) rgb(164 80 106 / 0.25));
 }
 
 .date__lockup {

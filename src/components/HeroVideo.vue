@@ -23,6 +23,10 @@ const muted = ref(true)
 const covered = ref(false)
 // Pantallas anchas: el reel vertical se centra sobre una copia desenfocada de sí mismo
 const wide = ref(false)
+// Pasado un rato el texto se retira para dejar ver el video completo
+const QUIET_AFTER = 15_000
+const quiet = ref(false)
+let quietTimer: number | undefined
 
 function play() {
   const element = video.value
@@ -40,6 +44,7 @@ function setMuted(value: boolean) {
 // Se llama desde el toque que abre el sobre: ese gesto permite arrancar con sonido.
 function start() {
   started.value = true
+  quietTimer = window.setTimeout(() => (quiet.value = true), QUIET_AFTER)
   const element = video.value
   if (!element) return
   setMuted(false)
@@ -79,16 +84,22 @@ function setCovered(value: boolean) {
   else if (!value && video.value?.paused) play()
 }
 
+// El velo arranca 1.6 pantallas abajo y sube más rápido que el contenido:
+// así lo que entra en pantalla siempre cae sobre fondo claro.
+const VEIL_START = 160
+const VEIL_SPEED = 190
+
 // progress: 0 con el video a pantalla completa, 1 cuando la portada ya salió de pantalla
 function render(progress: number) {
-  veil.value?.style.setProperty('--front', progress.toFixed(4))
+  const offset = Math.max(0, VEIL_START - VEIL_SPEED * progress)
+  if (veil.value) gsap.set(veil.value, { yPercent: offset })
   if (!reducedMotion) {
     if (video.value) gsap.set(video.value, { scale: 1 + progress * 0.14 })
     if (copy.value) gsap.set(copy.value, { y: progress * -90 })
   }
   if (copy.value) gsap.set(copy.value, { opacity: Math.max(0, 1 - progress * 2.4) })
 
-  const isCovered = progress >= 0.999
+  const isCovered = offset === 0
   if (isCovered !== covered.value) setCovered(isCovered)
 }
 
@@ -101,6 +112,7 @@ onMounted(() => {
   wideQuery.addEventListener('change', updateWide)
   updateWide()
 
+  render(0)
   if (!hero.value) return
   trigger = ScrollTrigger.create({
     trigger: hero.value,
@@ -112,6 +124,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  window.clearTimeout(quietTimer)
   trigger?.kill()
   wideQuery?.removeEventListener('change', updateWide)
 })
@@ -144,29 +157,31 @@ defineExpose({ start })
       @play="onPlay"
       @pause="onPause"
     />
-    <div class="stage__shade" />
+    <div class="stage__shade" :class="{ 'is-quiet': quiet }" />
   </div>
 
   <!-- Velo pastel que sube con el scroll hasta cubrir el video -->
-  <div ref="veil" class="veil" :class="{ 'is-covered': covered }">
-    <PastelBackdrop />
+  <div ref="veil" class="veil">
+    <PastelBackdrop :feather="0.6" />
   </div>
 
   <section ref="hero" class="hero" aria-label="Video de bienvenida">
     <div v-if="started" ref="copy" class="hero__copy">
-      <p v-reveal:blur="500" class="hero__chip">Baby Shower <span>·</span> Ada Kollontai</p>
+      <div class="hero__layout" :class="{ 'is-quiet': quiet }">
+        <p v-reveal:blur="500" class="hero__chip">Baby Shower <span>·</span> Ada Kollontai</p>
 
-      <div class="hero__bottom">
-        <RevealText
-          class="script hero__caption"
-          :lines="['Una nueva aventura', 'comienza']"
-          :delay="900"
-        />
-        <div v-reveal="1900">
-          <button class="hero__cue" type="button" @click="scrollToSection('invitacion')">
-            Desliza
-            <span class="hero__cue-line" aria-hidden="true" />
-          </button>
+        <div class="hero__bottom">
+          <RevealText
+            class="script hero__caption"
+            :lines="['Una nueva aventura', 'comienza']"
+            :delay="900"
+          />
+          <div v-reveal="1900">
+            <button class="hero__cue" type="button" @click="scrollToSection('invitacion')">
+              Desliza
+              <span class="hero__cue-line" aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -208,12 +223,12 @@ defineExpose({ start })
   inset: 0 0 auto;
   height: 100vh;
   height: 100lvh;
-  overflow: hidden;
   pointer-events: none;
 }
 
 .stage {
   z-index: 0;
+  overflow: hidden;
   display: grid;
   /* Una sola celda del tamaño del escenario: las capas se apilan en ella */
   grid-template: 100% / 100%;
@@ -256,6 +271,11 @@ defineExpose({ start })
     rgb(62 26 40 / 0.5) 72%,
     rgb(62 26 40 / 0.82)
   );
+  transition: opacity 1.8s ease;
+}
+
+.stage__shade.is-quiet {
+  opacity: 0;
 }
 
 @media (min-aspect-ratio: 4/5) {
@@ -268,26 +288,12 @@ defineExpose({ start })
   }
 }
 
-/* --front va de 0 a 1 con el scroll: el frente del velo sube más rápido que el
-   contenido, así lo que entra en pantalla siempre cae sobre fondo claro. */
+/* El velo sube completo con `transform` (lo mueve el scroll desde render):
+   es una capa ya pintada que el teléfono solo desplaza. Su borde de arriba
+   se desvanece (feather) para fundirse con el video en lugar de cortarlo. */
 .veil {
-  --front: 0;
   z-index: 1;
-  -webkit-mask-image: linear-gradient(
-    to top,
-    #000 calc(var(--front) * 190% - 60%),
-    transparent calc(var(--front) * 190%)
-  );
-  mask-image: linear-gradient(
-    to top,
-    #000 calc(var(--front) * 190% - 60%),
-    transparent calc(var(--front) * 190%)
-  );
-}
-
-.veil.is-covered {
-  -webkit-mask-image: none;
-  mask-image: none;
+  will-change: transform;
 }
 
 /* svh: el alto con la barra del navegador visible, para que el texto
@@ -299,7 +305,32 @@ defineExpose({ start })
   pointer-events: none;
 }
 
+/* Controles sobre el video: en teléfonos, un ahumado translúcido; con mouse, vidrio
+   desenfocado (desenfocar un video en cada cuadro le cuesta de más a un teléfono). */
+.hero,
+.sound {
+  --smoke: rgb(62 26 40 / 0.34);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero,
+  .sound {
+    --smoke: rgb(255 255 255 / 0.16);
+  }
+
+  .hero__chip,
+  .hero__play,
+  .sound:not(.sound--light) {
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+  }
+}
+
 .hero__copy {
+  height: 100%;
+}
+
+.hero__layout {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -309,6 +340,19 @@ defineExpose({ start })
   margin: 0 auto;
   padding: calc(env(safe-area-inset-top, 0px) + var(--s) * 18) var(--gutter)
     calc(env(safe-area-inset-bottom, 0px) + var(--s) * 30);
+}
+
+/* A los 15 segundos el texto se desvanece y queda solo el video */
+.hero__layout {
+  transition:
+    opacity 1.8s ease,
+    visibility 0s;
+}
+
+.hero__layout.is-quiet {
+  opacity: 0;
+  visibility: hidden;
+  transition-delay: 0s, 1.8s;
 }
 
 .hero__chip {
@@ -321,15 +365,13 @@ defineExpose({ start })
   padding: 0 calc(var(--s) * 16);
   border: 1px solid rgb(255 255 255 / 0.35);
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--smoke);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: max(calc(var(--s) * 11.5), 10px);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   white-space: nowrap;
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
 }
 
 .hero__chip span {
@@ -416,12 +458,10 @@ defineExpose({ start })
   padding: 0;
   border: 1px solid rgb(255 255 255 / 0.5);
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.2);
+  background: var(--smoke);
   translate: -50% -50%;
   cursor: pointer;
   pointer-events: auto;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
 }
 
 .hero__play svg {
@@ -442,12 +482,10 @@ defineExpose({ start })
   padding: 0;
   border: 1px solid rgb(255 255 255 / 0.35);
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.16);
+  background: var(--smoke);
   color: #fff;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  -webkit-backdrop-filter: blur(12px) saturate(1.4);
-  backdrop-filter: blur(12px) saturate(1.4);
   transition:
     scale 0.3s var(--ease-spring),
     color 0.5s ease,

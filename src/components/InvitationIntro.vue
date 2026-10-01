@@ -14,17 +14,21 @@ import RevealText from './RevealText.vue'
 <template>
   <!-- La llegada: tendedero -->
   <section id="invitacion" class="arrival">
-    <div v-reveal:scale class="arrival__shape">
-      <div class="arrival__blob glass" />
+    <!-- El texto va al centro de la mancha: el moño cuelga de su borde de arriba
+         y el tendedero cruza por el de abajo -->
+    <div class="arrival__panel">
+      <div v-reveal:scale class="arrival__shape">
+        <div class="arrival__blob glass" />
+      </div>
+      <div v-reveal:scale class="arrival__bow">
+        <img class="floaty" :src="bow" width="474" height="500" alt="" />
+      </div>
+      <RevealText
+        class="arrival__text"
+        :lines="['Una pequeñita llega', 'para recorrer el mundo...']"
+        :delay="200"
+      />
     </div>
-    <div v-reveal:scale class="arrival__bow">
-      <img class="floaty" :src="bow" width="474" height="500" alt="" />
-    </div>
-    <RevealText
-      class="arrival__text"
-      :lines="['Una pequeñita llega', 'para recorrer el mundo...']"
-      :delay="200"
-    />
     <div v-reveal="350" class="arrival__clothes">
       <img
         class="sway"
@@ -59,6 +63,14 @@ import RevealText from './RevealText.vue'
         />
       </div>
     </div>
+
+    <!-- El nombre, acunado por la guía de flores -->
+    <div class="invite__name">
+      <div v-reveal:scale="150" class="invite__vine">
+        <img :src="vine" width="800" height="266" alt="" />
+      </div>
+      <p v-reveal:write="350" class="script name"><span>Kollontai</span></p>
+    </div>
   </section>
 
   <!-- La portada: marco de flores -->
@@ -78,11 +90,8 @@ import RevealText from './RevealText.vue'
           height="659"
           alt="Patita con moño y botas rosas"
         />
-        <p v-reveal:write="600" class="script cover__name">Kollontai</p>
+        <p v-reveal:write="500" class="script name cover__name"><span>Kollontai</span></p>
       </div>
-    </div>
-    <div v-reveal="200" class="cover__vine">
-      <img :src="vine" width="800" height="266" alt="" />
     </div>
   </section>
 </template>
@@ -104,63 +113,69 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: calc(var(--s) * 70) 0 calc(var(--s) * 30);
+  padding: calc(var(--s) * 120) 0 calc(var(--s) * 30);
 }
 
-.arrival > :not(.arrival__shape) {
+.arrival__panel {
   position: relative;
+  display: flex;
+  justify-content: center;
+  width: calc(100% - var(--s) * 28);
+  padding: calc(var(--s) * 104) 0 calc(var(--s) * 132);
 }
 
 .arrival__shape {
   position: absolute;
-  inset: calc(var(--s) * 118) calc(var(--s) * 14) calc(var(--s) * 84);
+  inset: 0;
 }
 
-/* Mancha de vidrio que cambia de forma lentamente, como acuarela aún húmeda */
+/* Mancha de vidrio que se mece despacio, como acuarela aún húmeda.
+   Solo gira y respira (transform): cambiar su forma obligaría a repintarla. */
 .arrival__blob {
   width: 100%;
   height: 100%;
-  border-radius: 46% 54% 52% 48% / 40% 44% 56% 60%;
-  animation: morph 14s ease-in-out infinite alternate;
+  border-radius: 48% 52% 51% 49% / 44% 47% 53% 56%;
+  animation: wobble 16s ease-in-out infinite alternate;
 }
 
-@keyframes morph {
-  50% {
-    border-radius: 56% 44% 46% 54% / 48% 56% 44% 52%;
+@keyframes wobble {
+  from {
+    transform: rotate(-3deg) scale(1);
   }
   to {
-    border-radius: 44% 56% 58% 42% / 54% 40% 60% 46%;
+    transform: rotate(3deg) scale(1.03);
   }
 }
 
 .arrival__bow {
+  position: absolute;
+  top: calc(var(--s) * -64);
+  left: 50%;
   width: calc(var(--s) * 132);
+  margin-left: calc(var(--s) * -66);
   rotate: -7deg;
 }
 
 .arrival__text {
-  margin-top: calc(var(--s) * 14);
+  position: relative;
   color: var(--olive-dark);
   font-family: var(--font-formal-script);
-  font-size: calc(var(--s) * 35);
-  line-height: 1.12;
+  font-size: calc(var(--s) * 38.5);
+  line-height: 1.14;
   text-align: center;
 }
 
 /* El tendedero es más ancho que la columna: se sale por ambos lados */
 .arrival__clothes {
+  position: relative;
   width: calc(var(--col) * 1.04);
-  margin-top: calc(var(--s) * 30);
-}
-
-.arrival__clothes img {
-  filter: drop-shadow(0 calc(var(--s) * 14) calc(var(--s) * 14) rgb(164 80 106 / 0.2));
+  margin-top: calc(var(--s) * -104);
 }
 
 /* ---------- Invitación ---------- */
 
 .invite {
-  padding: calc(var(--s) * 120) var(--gutter) calc(var(--s) * 70);
+  padding: calc(var(--s) * 120) var(--gutter) calc(var(--s) * 56);
 }
 
 .invite__arch {
@@ -217,7 +232,47 @@ img {
 .invite__geese {
   width: calc(var(--s) * 232);
   margin: calc(var(--s) * 20) 0 calc(var(--s) * -42);
-  filter: drop-shadow(0 calc(var(--s) * 16) calc(var(--s) * 16) rgb(90 52 6 / 0.16));
+}
+
+.invite__name {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--s) * 316);
+  aspect-ratio: 949 / 313;
+  margin: calc(var(--s) * 62) auto 0;
+}
+
+/* Luz crema detrás del nombre para despegarlo de las rayas */
+.invite__name::before {
+  content: '';
+  position: absolute;
+  inset: -45% -12%;
+  background: radial-gradient(closest-side, rgb(254 252 249 / 0.95) 35%, transparent);
+}
+
+.invite__vine {
+  position: absolute;
+  inset: 0;
+}
+
+.invite__name .name {
+  position: relative;
+  align-self: start;
+  margin-top: calc(var(--s) * -14);
+  font-size: calc(var(--s) * 64);
+}
+
+/* El nombre de Kollontai, en la invitación y en la portada */
+.name {
+  color: var(--olive);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+/* El recorte de v-reveal:write no debe cortar los rasgos de la caligrafía */
+.name span {
+  padding: 0 0.12em;
 }
 
 /* ---------- Portada ---------- */
@@ -299,15 +354,7 @@ img {
 }
 
 .cover__name {
-  margin-top: calc(var(--s) * -2);
-  color: var(--olive);
-  font-size: calc(var(--s) * 70);
-  line-height: 1.1;
-  white-space: nowrap;
-}
-
-.cover__vine {
-  width: calc(var(--s) * 290);
-  margin-top: calc(var(--s) * -34);
+  margin-top: calc(var(--s) * -4);
+  font-size: calc(var(--s) * 68);
 }
 </style>

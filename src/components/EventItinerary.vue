@@ -106,7 +106,6 @@ onUnmounted(() => {
 .itinerary__clothes img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 calc(var(--s) * 14) calc(var(--s) * 14) rgb(100 120 43 / 0.2));
 }
 
 .itinerary__title {

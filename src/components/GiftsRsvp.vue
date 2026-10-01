@@ -11,6 +11,7 @@ import { maskIcon } from '../design'
 import { vParallax } from '../directives/parallax'
 import { vReveal } from '../directives/reveal'
 import { REGISTRY, RSVP_NO_URL, RSVP_YES_URL } from '../event'
+import PastelBackdrop from './PastelBackdrop.vue'
 import PillButton from './PillButton.vue'
 import RegistryCard from './RegistryCard.vue'
 </script>
@@ -61,6 +62,7 @@ import RegistryCard from './RegistryCard.vue'
   </section>
 
   <section id="confirmacion" class="rsvp">
+    <PastelBackdrop tone="olive" />
     <div class="rsvp__glow" aria-hidden="true" />
     <div class="rsvp__inner">
       <span v-reveal:scale class="rsvp__seal" aria-hidden="true">
@@ -107,7 +109,6 @@ import RegistryCard from './RegistryCard.vue'
 .gifts__box img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 calc(var(--s) * 14) calc(var(--s) * 14) rgb(164 80 106 / 0.28));
 }
 
 .gifts__title {
@@ -175,7 +176,6 @@ import RegistryCard from './RegistryCard.vue'
   width: calc(var(--s) * 84);
   height: auto;
   rotate: 18deg;
-  filter: drop-shadow(0 calc(var(--s) * 10) calc(var(--s) * 10) rgb(164 80 106 / 0.25));
 }
 
 .gifts__free {
@@ -249,42 +249,12 @@ import RegistryCard from './RegistryCard.vue'
   text-align: center;
 }
 
-/* Patitos del diseño y luces verdes que se mueven despacio */
+/* Patitos del diseño, sobre luces verdes y rosas que se mueven despacio */
 .rsvp__glow {
   position: absolute;
   inset: 0;
   background: url('../assets/img/duck-pattern.webp') 0 0 / calc(var(--s) * 170);
   opacity: 0.4;
-}
-
-.rsvp::before,
-.rsvp::after {
-  content: '';
-  position: absolute;
-  width: 110vmax;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(189 208 141 / 0.75), transparent);
-  animation: glow 16s ease-in-out infinite alternate;
-}
-
-.rsvp::before {
-  top: -60vmax;
-  left: -60vmax;
-}
-
-.rsvp::after {
-  right: -70vmax;
-  bottom: -70vmax;
-  background: radial-gradient(closest-side, rgb(229 104 129 / 0.3), transparent);
-  animation-duration: 21s;
-  animation-direction: alternate-reverse;
-}
-
-@keyframes glow {
-  to {
-    transform: translate3d(18vmax, 14vmax, 0) scale(1.15);
-  }
 }
 
 .rsvp__inner {
@@ -306,9 +276,7 @@ import RegistryCard from './RegistryCard.vue'
   height: calc(var(--s) * 68);
   border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.16);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgb(255 255 255 / 0.18);
 }
 
 .rsvp__seal .icon-mask {

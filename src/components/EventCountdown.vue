@@ -161,7 +161,8 @@ function digits(value: number, pad = 2) {
 .countdown__progress {
   stroke-width: 7;
   stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear;
+  /* Un salto breve por segundo: una transición continua repintaría sin parar */
+  transition: stroke-dashoffset 0.4s var(--ease-out);
 }
 
 .countdown__major .countdown__progress {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import EnvelopeGate from './components/EnvelopeGate.vue'
 import EventItinerary from './components/EventItinerary.vue'
 import FloatingDock from './components/FloatingDock.vue'
@@ -13,12 +13,30 @@ import { lockScroll } from './motion'
 const hero = useTemplateRef('hero')
 const opened = ref(false)
 
+// Las animaciones continuas (tendederos, moños, fondos) solo corren en las secciones
+// que están en pantalla: style.css pausa todo lo que quede dentro de .is-offscreen.
+let sections: IntersectionObserver | undefined
+
 onMounted(() => {
+  if (typeof IntersectionObserver !== 'undefined') {
+    sections = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          entry.target.classList.toggle('is-offscreen', !entry.isIntersecting)
+        }
+      },
+      { rootMargin: '15% 0px' },
+    )
+    for (const section of document.querySelectorAll('main > section')) sections.observe(section)
+  }
+
   // La invitación siempre empieza por el sobre, desde arriba
   history.scrollRestoration = 'manual'
   window.scrollTo(0, 0)
   lockScroll(true)
 })
+
+onUnmounted(() => sections?.disconnect())
 
 function open() {
   opened.value = true

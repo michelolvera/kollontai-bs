@@ -59,12 +59,25 @@ defineEmits<{ open: [] }>()
     gate-in 1.4s var(--ease-out) backwards,
     floaty 5.5s ease-in-out 1.4s infinite alternate;
   transition: scale 0.5s var(--ease-spring);
+  isolation: isolate;
+}
+
+/* Sombra pintada con un degradado: un filtro drop-shadow sobre una imagen
+   animada obliga a recalcular el desenfoque en cada cuadro. */
+.gate__envelope::before {
+  content: '';
+  position: absolute;
+  right: 4%;
+  bottom: 9%;
+  left: 4%;
+  z-index: -1;
+  height: 13%;
+  background: radial-gradient(closest-side, rgb(164 80 106 / 0.38), transparent);
 }
 
 .gate__envelope img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 calc(var(--e) * 22) calc(var(--e) * 26) rgb(164 80 106 / 0.3));
 }
 
 .gate__text {

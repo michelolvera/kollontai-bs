@@ -120,7 +120,6 @@ onUnmounted(() => observer?.disconnect())
 .venue__stork img {
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 calc(var(--s) * 10) calc(var(--s) * 10) rgb(90 52 6 / 0.18));
 }
 
 .venue__card {
@@ -164,14 +163,12 @@ onUnmounted(() => observer?.disconnect())
   padding: calc(var(--s) * 9) calc(var(--s) * 16);
   border: 1px solid var(--glass-border);
   border-radius: 999px;
-  background: rgb(255 253 249 / 0.82);
+  background: rgb(255 253 249 / 0.92);
   color: var(--pink-deep);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: max(calc(var(--s) * 13), 12px);
   letter-spacing: 0.04em;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
 }
 
 .venue__wake:focus-visible .venue__wake-chip {

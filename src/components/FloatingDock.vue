@@ -68,7 +68,6 @@ onUnmounted(() => trigger?.kill())
   gap: calc(var(--s) * 2);
   padding: calc(var(--s) * 6);
   border-radius: 999px;
-  background: rgb(255 253 249 / 0.72);
   translate: -50% 160%;
   visibility: hidden;
   transition:
